@@ -135,7 +135,7 @@ sed $sed_cmd < "$input_file" > "$output_file"
 
 cd $WPS_DIR 
 for ((i=0; i<=run_hours/3; i++)); do
-  $ncl/ncl -Q ind_date=$i ./ICEDEPTHregrid.ncl
+  $ncl/ncl -Q ind_date=$i ./ICEDEPTHregrid.ncl >ice.log
 done
 #&& ncl ICEDEPTHregrid.ncl >ice.log
 
