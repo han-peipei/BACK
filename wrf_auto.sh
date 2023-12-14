@@ -233,13 +233,14 @@ done
 #                后处理  
 #########################################
 cd ${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}
+rm -rf picture
 mkdir picture
 cd $BASE_DIR
 declare -A patterns
 patterns["DIR"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/
 patterns["FILENAME"]=wrfout_d01_${start_time:0:4}-${start_time:5:2}-${start_time:8:2}_12:00:00
-patterns["OUTPUT_ICEDEPTH"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/picture/wrfout_icedepth_winds_
-patterns["OUTPUT_visibility"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/picture/wrfout_visibility_
+patterns["OUTPUT_ICEDEPTH"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/picture/wrfout_icedepth_winds_BJT_
+patterns["OUTPUT_visibility"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/picture/wrfout_visibility_BJT_
 
 sed_cmd="s|<pattern_to_replace_1>|<replacement_text_1>|g"
 for key in "${!patterns[@]}"; do
