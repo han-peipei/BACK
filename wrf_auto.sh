@@ -232,12 +232,14 @@ done
 #########################################
 #                后处理  
 #########################################
+cd ${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}
+mkdir picture
 cd $BASE_DIR
-
 declare -A patterns
 patterns["DIR"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/
 patterns["FILENAME"]=wrfout_d01_${start_time:0:4}-${start_time:5:2}-${start_time:8:2}_12:00:00
-patterns["OUTPUT"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/wrfout_icedepth_windsx
+patterns["OUTPUT_ICEDEPTH"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/picture/wrfout_icedepth_winds_
+patterns["OUTPUT_visibility"]=${BASE_DIR}/${start_time:0:4}${start_time:5:2}${start_time:8:2}/picture/wrfout_visibility_
 
 sed_cmd="s|<pattern_to_replace_1>|<replacement_text_1>|g"
 for key in "${!patterns[@]}"; do
@@ -245,16 +247,16 @@ for key in "${!patterns[@]}"; do
   new_pattern="${patterns[$key]}"
   sed_cmd+=";s|$old_pattern|$new_pattern|g"
 done
-input_file=${BASE_DIR}/wrfout_icedepth_windsx_template.ncl
-output_file="wrfout_icedepth_windsx.ncl"
+input_file=${BASE_DIR}/wrfout_template.ncl
+output_file="wrfout.ncl"
 sed "$sed_cmd" < "$input_file" > "$output_file"
 
  cat > ncl.sh <<EOF
 #!/bin/bash
-yhrun -N 1 -n 1 -p thcp1 $ncl/ncl wrfout_icedepth_windsx.ncl >wind.log
+yhrun -N 1 -n 10 -p thcp1 $ncl/ncl wrfout.ncl >wind.log
 EOF
 chmod a+x ncl.sh
-yhbatch -N 1 -n 1 -p thcp1 $BASE_DIR/ncl.sh >& jobID_ncl_wind
+yhbatch -N 1 -n 10 -p thcp1 $BASE_DIR/ncl.sh >& jobID_ncl_wind
 pid_ncl=$(awk '{print $4}' jobID_ncl_wind)
 while true; do
     job_status=$(/usr/bin/yhqueue | grep "$pid_ncl" | awk '{print $1}')
@@ -264,8 +266,3 @@ while true; do
         break  # 作业完成或其他状态时退出循环
     fi
 done
-
-#########################################
-#                删除日志  
-#########################################
-# cd $WPS_DIR && rm metgrid.log.0* geogrid.log.0* slurm-* 
