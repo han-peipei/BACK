@@ -6,8 +6,13 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/esmf/ESMF_regridding.ncl"
 
 begin
 month=MONTH
-icedepth1 = fbindirread("HEFF", 0, (/month-1,360,276/),"float")
-icedepth = icedepth1(month-2,:,:)
+if (month.gt.1) then
+    icedepth1 = fbindirread("HEFF1", 0, (/month-1,360,276/),"float")
+    icedepth = icedepth1(month-2,:,:)
+else
+    icedepth1 = fbindirread("HEFF2", 0, (/12,360,276/),"float")
+    icedepth = icedepth1(11,:,:)
+end if
 icedepth=where(icedepth.gt.9999, -1e+30, icedepth)
 ;;;;;HPP ADD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DATE_begin=DATE_BEG

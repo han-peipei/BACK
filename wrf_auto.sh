@@ -117,10 +117,12 @@ while true; do
     fi
 done
 cd $WPS_DIR 
+year=${start_time:0:4}
 ### 根据 ICEDEPTHregrid_template.ncl 编辑 ICEDEPTHregrid.ncl
 declare -A patterns
 patterns["MONTH"]=${start_time:5:2}
-patterns["HEFF"]=heff${start_time:0:4}${start_time:5:2}.H2023
+patterns["HEFF1"]=heff${start_time:0:4}${start_time:5:2}.H2023
+patterns["HEFF2"]=heff$(expr $year - 1)12.H2023
 patterns["DATE_BEG"]=${start_time:0:4}${start_time:5:2}${start_time:8:2}${start_time:11:2}
 
 sed_cmd=""
